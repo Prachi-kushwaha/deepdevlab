@@ -17,5 +17,48 @@ model Blog {
   id        Int      @id @default(autoincrement())
   title     String
   content   String
+  imageUrl  String
+  tags      Tag[]    @relation("Blogtags")
+  createdAt DateTime @default(now())
+
+  Comment Comment[]
+}
+
+model Tag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  blog Blog[] @relation("Blogtags")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  email    String @unique
+  password String
+  role     Role   @default(USER)
+
+  Comment Comment[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Comment{
+  id Int @id @default(autoincrement())
+  content String
+
+  user      User     @relation(fields: [userId], references: [id])  // Who commented
+  userId    Int
+
+  blog      Blog    @relation(fields: [blogId], references: [id])  // On which post
+  blogId    Int
+  
+  likesCount   Int  @default(0)  
+  unlikesCount Int  @default(0)  
+
   createdAt DateTime @default(now())
 }
+
+
